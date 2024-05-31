@@ -8,13 +8,16 @@ import {
 } from 'react-native';
 import SafeViewAndroid from '../components/SafeViewAndroid';
 import IconText from '../components/IconText';
+import moment from 'moment';
 
-const City = () => {
+const City = ({ weatherData }) => {
+  const { name, country, population, sunrise, sunset } = weatherData;
+
   const {
     container,
     imageLayout,
     cityName,
-    country,
+    countryStyle,
     cityText,
     populationWrapper,
     populationText,
@@ -29,13 +32,13 @@ const City = () => {
         source={require('../../assets/city-background.jpg')}
         style={imageLayout}
       >
-        <Text style={[cityName, cityText]}>London</Text>
-        <Text style={[country, cityText]}>UK</Text>
+        <Text style={[cityName, cityText]}>{name}</Text>
+        <Text style={[countryStyle, cityText]}>{country}</Text>
         <View style={[populationWrapper, rowLayout]}>
           <IconText
             iconName={'user'}
             iconColor={'#333333'}
-            bodyText={'8000'}
+            bodyText={`Population: ${population}`}
             bodyTextStyles={populationText}
           />
         </View>
@@ -43,13 +46,13 @@ const City = () => {
           <IconText
             iconName={'sunrise'}
             iconColor={'#ffffff'}
-            bodyText={'10:46:58am'}
+            bodyText={moment(sunrise * 1000).format('h:mm:ss a')}
             bodyTextStyles={riseSetText}
           />
           <IconText
             iconName={'sunset'}
             iconColor={'#ffffff'}
-            bodyText={'17:28:15pm'}
+            bodyText={moment(sunset * 1000).format('h:mm:ss a')}
             bodyTextStyles={riseSetText}
           />
         </View>
@@ -67,14 +70,14 @@ const styles = StyleSheet.create({
   cityName: {
     fontSize: 40,
   },
-  country: {
+  countryStyle: {
     fontSize: 30,
   },
   cityText: {
     justifyContent: 'center',
     alignItems: 'center',
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#333333',
   },
   populationWrapper: {
     justifyContent: 'center',
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
   },
   riseSetText: {
     fontSize: 20,
-    color: '#ffffff',
+    color: 'black',
   },
   rowLayout: {
     flexDirection: 'row',

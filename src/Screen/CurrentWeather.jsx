@@ -3,12 +3,18 @@ import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
 import Feather from '@expo/vector-icons/Feather';
 import SafeViewAndroid from '.././components/SafeViewAndroid';
 import RowText from '../components/RowText';
+import { weatherType } from '../utils/WeatherType';
 
-const CurrentWeather = () => {
+const CurrentWeather = ({ weatherData }) => {
+  const {
+    main: { temp, feels_like, temp_max, temp_min },
+    weather,
+  } = weatherData;
+  const weatherCondition = weather[0]?.main;
   const {
     wrapper,
     container,
-    temp,
+    tempStyle,
     feels,
     highLowWrapper,
     highLow,
@@ -17,22 +23,32 @@ const CurrentWeather = () => {
     message,
   } = styles;
   return (
-    <SafeAreaView style={[SafeViewAndroid.AndroidSafeArea, wrapper]}>
+    <SafeAreaView
+      style={[
+        SafeViewAndroid.AndroidSafeArea,
+        wrapper,
+        { backgroundColor: weatherType[weatherCondition]?.backgroundColor },
+      ]}
+    >
       <View style={container}>
-        <Feather name="sun" size={100} color="black" />
-        <Text style={temp}>6</Text>
-        <Text style={feels}> Feels like 5</Text>
+        <Feather
+          name={weatherType[weatherCondition]?.icon}
+          size={100}
+          color="black"
+        />
+        <Text style={tempStyle}>{`${temp}°`}</Text>
+        <Text style={feels}> {`Feels like ${feels_like}°`}</Text>
         <RowText
-          message1={'High: 8'}
-          message2={'Low: 6'}
+          message1={`high: ${temp_max}° `}
+          message2={`Low: ${temp_min}°`}
           containerStyles={highLowWrapper}
           message1Styles={highLow}
           message2Styles={highLow}
         />
       </View>
       <RowText
-        message1={'Its sunny'}
-        message2={'Its perfect t-shirt weather'}
+        message1={weather[0]?.description}
+        message2={weatherType[weatherCondition]?.message}
         containerStyles={bodyWrapper}
         message1Styles={description}
         message2Styles={message}
@@ -44,14 +60,13 @@ const CurrentWeather = () => {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: '#fafafa',
   },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  temp: {
+  tempStyle: {
     color: 'black',
     fontSize: 48,
   },
@@ -70,13 +85,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
     paddingLeft: 25,
-    marginBottom: 14,
+    marginBottom: 40,
   },
   description: {
-    fontSize: 48,
+    fontSize: 43,
   },
   message: {
-    fontSize: 30,
+    fontSize: 25,
   },
 });
 export default CurrentWeather;
